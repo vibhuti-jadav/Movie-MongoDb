@@ -8,6 +8,7 @@ const AddMovie = async(req,res,next)=>{
     try {
         
         const {title,description,realeaseYear,genere,director,cast} = req.body;
+
         const newMovie = {
             title,
             description,
@@ -16,8 +17,6 @@ const AddMovie = async(req,res,next)=>{
             director,
             cast
         }
-
-
 
        const  SaveMovie = new movie(newMovie)
 
@@ -99,8 +98,6 @@ const deleteMovie = async(req,res,next)=>{
         next(new httpError(error.message,400))
     }
 }
-
-
 
 
 export default {AddMovie,getAllMovie,updateMovie,deleteMovie}

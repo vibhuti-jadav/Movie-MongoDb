@@ -21,6 +21,7 @@ const movieSchema = new mongoose.Schema(
             trim:true
         },
         cast:[String],
+        file:String,
     }
 )
 
