@@ -1,24 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Movie List</title>
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
     rel="stylesheet"
-  >
+  />
   <style>
     body {
       background-color: #121212;
       color: #fff;
-      font-family: 'Poppins', sans-serif;
+      font-family: "Poppins", sans-serif;
     }
     .movie-card {
       background-color: #1e1e1e;
       border-radius: 10px;
       overflow: hidden;
       transition: 0.3s;
+      position: relative;
     }
     .movie-card:hover {
       transform: scale(1.03);
@@ -38,26 +39,38 @@
     .btn-add {
       margin: 20px 0;
     }
+    .action-btns {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
   <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center">
       <h1>🎬 Movie Collection</h1>
-      <a href="/movie/add" class="btn btn-warning btn-add">+ Add Movie</a>
+      <a href="/movie/addMovie" class="btn btn-warning btn-add">+ Add Movie</a>
     </div>
 
     <div class="row mt-4">
-      <% if (movie.length > 0) { %>
+      <% if (movie && movie.length > 0) { %>
         <% movie.forEach(movie => { %>
           <div class="col-md-3 mb-4">
             <div class="movie-card">
-              <img src="<%= movie.posterUrl || '/default-poster.jpg' %>" alt="<%= movie.title %> poster">
+              <img src="<%= movie.file || '/default-poster.jpg' %>" alt="<%= movie.title %> poster" />
               <div class="movie-info">
                 <h5><%= movie.title %></h5>
                 <p><%= movie.description.substring(0, 80) %>...</p>
                 <p><strong>Director:</strong> <%= movie.director %></p>
-                <p><strong>Genre:</strong> <%= movie.genre.join(', ') %></p>
+                <p><strong>Genre:</strong> <%= (movie.genere || []).join(', ') %></p>
+
+                <div class="action-btns">
+                  <a href="/movie/edit/<%= movie._id %>" class="btn btn-sm btn-warning">Edit</a>
+                  <form action="/movie/delete/<%= movie._id %>" method="POST" onsubmit="return confirm('Are you sure you want to delete this movie?');">
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                  </form>
+                </div>
               </div>
             </div>
           </div>

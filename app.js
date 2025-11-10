@@ -1,66 +1,54 @@
-import dotenv from "dotenv"
+import dotenv from "dotenv";
 import express from "express";
 import connectDb from "./config/db.js";
-import movieRoutes  from "./routers/movieRoutes.js"
-import path from "path"
-import {fileURLToPath} from "url"
+import movieRoutes from "./routers/movieRoutes.js";
+// import the existing model from `modals` (correct folder name in this project)
 import movie from "./modals/movieModel.js";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 
+dotenv.config();
 
-dotenv.config()
-
-const app = express()
-const port = process.env.PORT || 3000
-
+const app = express();
+const port = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = dirname(__filename);
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "public")));
+// Serve static files (CSS, images, etc.)
+app.use(express.static(join(__dirname, "public")));
 
-app.use("/movie",movieRoutes)
-
+// Set up EJS as the view engine
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+app.set("views", join(__dirname, "views"));
 
-// app.get("/",(req,res)=>{
-//     res.redirect("/movie-list")
-// })
+// Use routes
+app.use("/movie", movieRoutes);
 
-app.get("/movie-list", async (req, res) => {
-  const movies = await movie.find(); // get from DB
-  res.render("movie-list", { movie });
+// Home route — show movie list
+// Redirect root to the movie list route which renders the template
+app.get("/", (req, res) => {
+  res.redirect("/movie/list");
 });
 
+const startServer = async () => {
+  try {
+    const connect = await connectDb();
 
-const startServer = async () =>{
+    if (!connect) throw new Error("Failed to connect to the database");
 
-    try {
-            const connect = await connectDb()
+    console.log("✅ Database connected");
 
-            if(!connect){
-                throw new Error("failed to connect to the databse")
-            }
+    app.listen(port, () => {
+      console.log(`🚀 Server running on port ${port}`);
+    });
+  } catch (error) {
+    console.error(error.message);
+    process.exit(1);
+  }
+};
 
-            console.log("database connected")
-
-app.listen(port,()=>{
-    console.log(`server runnign on port`,port)
-})
-
-    } catch (error) {
-        console.log(error.message)
-        process.exit(1)
-    }
-}
-
-startServer()
-
-
-
-
-
-
+startServer();
