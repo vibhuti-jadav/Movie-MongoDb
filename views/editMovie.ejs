@@ -5,63 +5,158 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Edit Movie</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    body { background-color: #121212; color: #fff; font-family: 'Poppins', sans-serif; }
-    .form-container { max-width: 600px; background-color: #1e1e1e; margin: 50px auto; padding: 30px; border-radius: 10px; }
-    .btn-submit { background-color: #f5c518; border: none; color: #000; font-weight: bold; }
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: url('https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?auto=format&fit=crop&w=1400&q=80') center/cover no-repeat;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(6px);
+      z-index: 0;
+    }
+
+    .form-container {
+      position: relative;
+      z-index: 1;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 35px 30px;
+      width: 100%;
+      max-width: 750px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+      overflow-y: auto;
+      max-height: 100vh;
+    }
+
+    h2 {
+      text-align: center;
+      color: #f5c518;
+      font-weight: 700;
+      margin-bottom: 25px;
+      text-shadow: 0 0 8px rgba(245,197,24,0.7);
+    }
+
+    label { font-weight: 600; color: #f5c518; }
+
+    .form-control {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: #fff;
+      margin-bottom: 15px;
+      transition: 0.3s ease;
+    }
+
+    .form-control:focus {
+      background: rgba(255,255,255,0.2);
+      box-shadow: 0 0 10px rgba(245,197,24,0.5);
+      color: #fff;
+    }
+
+    ::placeholder { color: #ccc; }
+
+    .poster-preview {
+      text-align: center;
+      margin: 15px 0;
+    }
+
+    .poster-preview img {
+      border-radius: 10px;
+      max-width: 120px; /* smaller size */
+      height: auto;
+      box-shadow: 0 0 15px rgba(245,197,24,0.5);
+    }
+
+    .btn-submit {
+      background: linear-gradient(90deg,#f5c518,#ffdb4d);
+      color: #000;
+      border: none;
+      border-radius: 50px;
+      font-weight: 700;
+      padding: 12px;
+      width: 100%;
+      box-shadow: 0 0 20px rgba(245,197,24,0.4);
+      transition: 0.3s;
+    }
+
+    .btn-submit:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 35px rgba(245,197,24,0.8);
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(0,0,0,0.6);
+      color: #f5c518;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 30px;
+      font-weight: 600;
+      text-decoration: none;
+      z-index: 2;
+      transition: 0.3s;
+    }
+
+    .back-btn:hover {
+      background: #f5c518;
+      color: #000;
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+      .form-container { padding: 25px 20px; }
+      h2 { font-size: 1.6rem; }
+    }
   </style>
 </head>
 <body>
+
+  <a href="/movie/list" class="back-btn">← Back</a>
+
   <div class="form-container">
-    <h2 class="text-center mb-4">✏️ Edit Movie</h2>
+    <h2>✏️ Edit Movie</h2>
 
     <form action="/movie/edit/<%= movie._id %>" method="POST" enctype="multipart/form-data">
-      <div class="mb-3">
-        <label class="form-label">Title</label>
-        <input type="text" name="title" class="form-control" value="<%= movie.title %>" required>
-      </div>
+      <input type="text" name="title" class="form-control" placeholder="Movie Title" value="<%= movie.title %>" required>
+      <textarea name="description" class="form-control" rows="3" placeholder="Description" required><%= movie.description %></textarea>
+      <input type="text" name="realeaseYear" class="form-control" placeholder="Release Year" value="<%= movie.realeaseYear %>" required>
+      <input type="text" name="genere" class="form-control" placeholder="Genre, e.g. Action, Thriller" value="<%= movie.genere.join(', ') %>" required>
+      <input type="text" name="director" class="form-control" placeholder="Director" value="<%= movie.director %>" required>
+      <input type="text" name="cast" class="form-control" placeholder="Cast, e.g. Actor 1, Actor 2" value="<%= movie.cast.join(', ') %>" required>
 
-      <div class="mb-3">
-        <label class="form-label">Description</label>
-        <textarea name="description" class="form-control" rows="3" required><%= movie.description %></textarea>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Release Year</label>
-        <input type="text" name="realeaseYear" class="form-control" value="<%= movie.realeaseYear %>">
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Genre (comma separated)</label>
-        <input type="text" name="genere" class="form-control" value="<%= movie.genere.join(', ') %>">
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Director</label>
-        <input type="text" name="director" class="form-control" value="<%= movie.director %>">
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Cast (comma separated)</label>
-        <input type="text" name="cast" class="form-control" value="<%= movie.cast.join(', ') %>">
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Current Poster</label><br>
+      <div class="poster-preview">
+        <label>Current Poster</label><br>
         <% if (movie.file) { %>
-          <img src="<%= movie.file %>" alt="<%= movie.title %>" width="150">
+          <img src="<%= movie.file %>" alt="<%= movie.title %>">
         <% } else { %>
-          <p>No poster available</p>
+          <p style="color:#ccc;">No poster available</p>
         <% } %>
       </div>
 
-      <div class="mb-3">
-        <label class="form-label">Upload New Poster</label>
-        <input type="file" name="file" class="form-control">
-      </div>
+      <input type="file" name="file" class="form-control">
 
-      <button type="submit" class="btn btn-submit w-100">Update Movie</button>
+      <button type="submit" class="btn-submit">Update Movie</button>
     </form>
   </div>
+
 </body>
 </html>

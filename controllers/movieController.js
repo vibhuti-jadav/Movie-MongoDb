@@ -4,12 +4,12 @@ import httpError from "../middleware/errorHandling.js";
 
 const AddMovie = async (req, res, next) => {
   try {
-    const { title, description, releaseYear, genere, director, cast } = req.body;
+    const { title, description, realeaseYear, genere, director, cast } = req.body;
 
     const newMovie = new movie({
       title,
       description,
-      releaseYear,
+      realeaseYear,
       director,
       genere: genere ? genere.split(",").map((g) => g.trim()) : [],
       cast: cast ? cast.split(",").map((c) => c.trim()) : [],
